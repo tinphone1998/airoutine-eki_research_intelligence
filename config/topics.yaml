@@ -1,0 +1,90 @@
+# topics.yaml
+# Research topic taxonomy for EKI Research Intelligence.
+# Each category maps to a set of tracked topics with keywords used to scope
+# source queries (config/sources.yaml) and to classify findings during scoring
+# (config/scoring.yaml). Keep this list curated — breadth dilutes signal.
+
+version: 1
+
+categories:
+  - name: Retrieval-Augmented Generation
+    slug: rag
+    description: >
+      Retrieval architectures that ground LLM generation in external knowledge.
+    topics:
+      - name: Hybrid Search & Re-ranking
+        keywords: [hybrid retrieval, re-ranking, dense passage retrieval, BM25 fusion]
+      - name: Long-Context vs. Retrieval Tradeoffs
+        keywords: [long context, context window, retrieval vs long context]
+      - name: Retrieval Evaluation
+        keywords: [RAG evaluation, retrieval benchmark, faithfulness evaluation]
+      - name: Agentic RAG
+        keywords: [agentic retrieval, multi-hop retrieval, iterative retrieval]
+
+  - name: Knowledge Representation
+    slug: knowledge-representation
+    description: >
+      Structured representations of enterprise knowledge and their integration with LLMs.
+    topics:
+      - name: Knowledge Graphs
+        keywords: [knowledge graph, KG embedding, graph RAG, GraphRAG]
+      - name: Ontology-Grounded LLMs
+        keywords: [ontology, schema grounding, structured knowledge injection]
+      - name: Enterprise Data Modeling
+        keywords: [enterprise data model, semantic layer, metadata catalog]
+
+  - name: Enterprise Search & Assistants
+    slug: enterprise-search
+    description: >
+      Copilot-style assistants and search systems operating over internal enterprise data.
+    topics:
+      - name: Permissions-Aware Retrieval
+        keywords: [access control retrieval, permission-aware RAG, ACL search]
+      - name: Enterprise Copilots
+        keywords: [enterprise copilot, workplace assistant, internal search assistant]
+      - name: Vendor Product Releases
+        keywords: [Glean, Microsoft Copilot, Salesforce Agentforce, ServiceNow AI, Notion AI]
+
+  - name: Agentic Workflows
+    slug: agentic-workflows
+    description: >
+      Multi-step, tool-using agents that act on enterprise knowledge rather than just answering questions.
+    topics:
+      - name: Multi-Agent Orchestration
+        keywords: [multi-agent, agent orchestration, agent framework]
+      - name: Tool Use & Function Calling
+        keywords: [tool use, function calling, API-calling agents]
+      - name: Autonomous Task Execution
+        keywords: [autonomous agent, computer use, task automation agent]
+
+  - name: Knowledge Governance
+    slug: knowledge-governance
+    description: >
+      Provenance, auditability, hallucination mitigation, and governance of AI-derived knowledge.
+    topics:
+      - name: Hallucination Mitigation
+        keywords: [hallucination detection, grounding verification, factuality]
+      - name: Provenance & Auditability
+        keywords: [citation attribution, source attribution, AI audit trail]
+      - name: AI Governance Policy
+        keywords: [enterprise AI governance, AI compliance, data governance AI]
+
+  - name: Knowledge-Worker Productivity
+    slug: knowledge-worker-productivity
+    description: >
+      Measured impact of AI copilots and agents on real knowledge-work tasks.
+    topics:
+      - name: Productivity Benchmarks
+        keywords: [knowledge worker productivity, task completion time, copilot impact study]
+      - name: Adoption Studies
+        keywords: [enterprise AI adoption, field study LLM, workplace AI survey]
+
+# Priority weighting used by the daily routine when triaging volume.
+# Higher weight = reviewed first / more thoroughly on high-volume days.
+priority_weights:
+  rag: 1.0
+  knowledge-representation: 0.9
+  enterprise-search: 1.0
+  agentic-workflows: 0.9
+  knowledge-governance: 0.7
+  knowledge-worker-productivity: 0.6

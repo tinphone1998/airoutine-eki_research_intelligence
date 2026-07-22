@@ -1,0 +1,55 @@
+# notion.yaml
+# Maps this repository's reporting cadence onto the connected Notion workspace.
+# Actual page/database IDs are environment-specific and should be supplied via
+# local, untracked configuration (e.g., a .env file) — this file documents the
+# naming and structural conventions, not secrets.
+
+version: 1
+
+workspace:
+  parent_page: "EKI Research Intelligence"
+  parent_page_description: >
+    Root page in Notion under which all daily, weekly, and monthly research
+    databases live. Created once; never recreated by routine runs.
+
+databases:
+  daily:
+    name: "EKI Daily Findings"
+    page_naming: "Daily — {YYYY-MM-DD}"
+    properties:
+      - { name: Date, type: date }
+      - { name: Title, type: title }
+      - { name: Topics, type: multi_select, source: config/topics.yaml }
+      - { name: Academic Score, type: number }
+      - { name: Enterprise Score, type: number }
+      - { name: Product Score, type: number }
+      - { name: Research Potential, type: number }
+      - { name: Implementation Difficulty, type: number }
+      - { name: Source Type, type: select, options: [academic, industry] }
+      - { name: Primary Link, type: url }
+
+  weekly:
+    name: "EKI Weekly Synthesis"
+    page_naming: "Weekly — {YYYY}-W{ww}"
+    properties:
+      - { name: Week, type: title }
+      - { name: Date Range, type: date }
+      - { name: Linked Daily Pages, type: relation, target: daily }
+      - { name: Key Themes, type: multi_select }
+      - { name: Watchlist Items, type: rich_text }
+
+  monthly:
+    name: "EKI Monthly Rollup"
+    page_naming: "Monthly — {YYYY-MM}"
+    properties:
+      - { name: Month, type: title }
+      - { name: Linked Weekly Pages, type: relation, target: weekly }
+      - { name: PoC Candidates, type: rich_text }
+      - { name: NSTC Relevance, type: rich_text }
+      - { name: Strategic Notes, type: rich_text }
+
+sync_rules:
+  - Never create a duplicate page for a date/period that already has one; update in place.
+  - Mirror the Markdown structure in templates/ exactly — Notion is a rendering of the same content, not a divergent format.
+  - Relations (daily → weekly → monthly) must be set on creation, not backfilled later, to avoid orphaned pages.
+  - On sync failure, the Markdown file in reports/ remains authoritative; retry the Notion sync on the next run.

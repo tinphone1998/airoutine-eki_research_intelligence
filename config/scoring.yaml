@@ -1,0 +1,84 @@
+# scoring.yaml
+# Scoring rubric applied to every finding logged in a daily report.
+# All scores are integers on a 1–5 scale unless noted. Every score must carry
+# a one-line rationale in the report (CLAUDE.md §13).
+
+version: 1
+
+scales:
+  range: [1, 5]
+  meaning:
+    1: Minimal
+    2: Limited
+    3: Moderate
+    4: Strong
+    5: Exceptional
+
+dimensions:
+  - name: Academic Score
+    slug: academic_score
+    description: >
+      Scientific rigor and novelty of the contribution: methodology soundness,
+      reproducibility (code/data released), and how much it advances the
+      state of the art versus prior work.
+    guiding_questions:
+      - Is the method genuinely novel or an incremental combination of known techniques?
+      - Are results reproducible (code/data available, ablations included)?
+      - Has the claim been validated beyond the authors' own benchmark?
+
+  - name: Enterprise Score
+    slug: enterprise_score
+    description: >
+      Relevance to real enterprise knowledge-management problems: data
+      governance, permissioning, scale, integration cost with existing systems.
+    guiding_questions:
+      - Does this address a problem enterprises actually have today?
+      - Does it account for permissioning, multi-tenancy, or data governance?
+      - Would this survive contact with messy, real-world enterprise data?
+
+  - name: Product Score
+    slug: product_score
+    description: >
+      Proximity to a shippable product feature: maturity, existing vendor
+      adoption signals, and engineering effort to productionize.
+    guiding_questions:
+      - Has any vendor already shipped something resembling this?
+      - What is the gap between the research prototype and a production system?
+      - Is there a clear UX/integration story, or is this purely backend capability?
+
+  - name: Research Potential
+    slug: research_potential
+    description: >
+      Value as a foundation for further academic work — including this
+      project's own papers, literature reviews, and NSTC proposals.
+    guiding_questions:
+      - Does this open a clear follow-on research question?
+      - Would this strengthen a literature review's argument for a research gap?
+      - Does it connect multiple tracked topics in a novel way?
+
+  - name: Implementation Difficulty
+    slug: implementation_difficulty
+    description: >
+      Estimated effort to build a working proof-of-concept internally.
+      Note: unlike the other dimensions, LOWER is easier — score reflects
+      difficulty, not desirability.
+    guiding_questions:
+      - What infrastructure/data prerequisites does a PoC require?
+      - Are there open-source implementations to build from?
+      - What is the realistic time-to-first-prototype (days vs. months)?
+
+composite_flags:
+  - name: PoC Candidate
+    condition: "product_score >= 4 AND implementation_difficulty <= 2"
+    description: High product relevance with low build effort — surface in monthly PoC shortlist.
+  - name: NSTC Relevant
+    condition: "academic_score >= 4 AND research_potential >= 4"
+    description: Strong academic grounding with clear research trajectory — surface for proposal drafting.
+  - name: High Priority
+    condition: "enterprise_score >= 4 AND product_score >= 4"
+    description: Enterprise-validated and near-shippable — flag for immediate weekly synthesis inclusion.
+
+rationale_requirement: >
+  Every dimension score in a report must be accompanied by a one-sentence
+  rationale citing the specific guiding question(s) it was judged against.
+  Scores without rationale are not valid per CLAUDE.md §12 (Reliability Rules).

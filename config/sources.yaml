@@ -1,0 +1,96 @@
+# sources.yaml
+# Scholarly and industry data sources polled by the daily/weekly routines.
+# `query_scope` references category slugs from config/topics.yaml.
+
+version: 1
+
+academic_sources:
+  - name: arXiv
+    slug: arxiv
+    type: preprint_repository
+    base_url: https://arxiv.org
+    api: https://export.arxiv.org/api/query
+    categories: [cs.CL, cs.AI, cs.IR, cs.LG]
+    query_scope: [rag, knowledge-representation, agentic-workflows, knowledge-governance]
+    poll_frequency: daily
+
+  - name: OpenReview
+    slug: openreview
+    type: peer_review_platform
+    base_url: https://openreview.net
+    api: https://api2.openreview.net
+    venues: [ICLR.cc, NeurIPS.cc, COLM.org]
+    query_scope: [rag, knowledge-representation, agentic-workflows]
+    poll_frequency: daily
+
+  - name: ACL Anthology
+    slug: acl-anthology
+    type: conference_archive
+    base_url: https://aclanthology.org
+    venues: [ACL, EMNLP, NAACL, COLING]
+    query_scope: [rag, knowledge-representation, knowledge-worker-productivity]
+    poll_frequency: weekly
+
+  - name: IEEE Xplore
+    slug: ieee-xplore
+    type: digital_library
+    base_url: https://ieeexplore.ieee.org
+    api: https://developer.ieee.org/docs
+    query_scope: [knowledge-representation, knowledge-governance]
+    poll_frequency: weekly
+    notes: Requires API key; access via institutional subscription where available.
+
+  - name: ACM Digital Library
+    slug: acm-dl
+    type: digital_library
+    base_url: https://dl.acm.org
+    venues: [SIGIR, CIKM, KDD, CHI]
+    query_scope: [rag, enterprise-search, knowledge-worker-productivity]
+    poll_frequency: weekly
+
+  - name: Crossref
+    slug: crossref
+    type: metadata_index
+    base_url: https://www.crossref.org
+    api: https://api.crossref.org/works
+    query_scope: [all]
+    poll_frequency: weekly
+    notes: Used primarily for DOI resolution and deduplication against the paper database.
+
+  - name: OpenAlex
+    slug: openalex
+    type: metadata_index
+    base_url: https://openalex.org
+    api: https://api.openalex.org/works
+    query_scope: [all]
+    poll_frequency: daily
+    notes: Preferred for citation graph enrichment and cross-source deduplication.
+
+industry_sources:
+  - name: GitHub
+    slug: github
+    type: code_repository
+    base_url: https://github.com
+    api: https://api.github.com
+    signals: [trending_repos, release_notes, new_repos_matching_topics]
+    query_scope: [rag, agentic-workflows, enterprise-search]
+    poll_frequency: daily
+
+  - name: Vendor Engineering Blogs
+    slug: vendor-blogs
+    type: blog
+    targets:
+      - Anthropic (https://www.anthropic.com/news)
+      - OpenAI (https://openai.com/news)
+      - Microsoft AI (https://blogs.microsoft.com/ai)
+      - Google DeepMind (https://deepmind.google/discover/blog)
+      - Glean (https://www.glean.com/blog)
+      - Salesforce (https://www.salesforce.com/news)
+      - ServiceNow (https://www.servicenow.com/blogs)
+    query_scope: [enterprise-search, agentic-workflows, knowledge-worker-productivity]
+    poll_frequency: daily
+
+evaluation_notes: >
+  Academic sources are treated as higher-confidence evidence than industry
+  sources per CLAUDE.md §13. Vendor blog claims must be explicitly labeled
+  as vendor-reported rather than independently verified.
