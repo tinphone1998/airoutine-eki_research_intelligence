@@ -64,7 +64,7 @@ Changing research direction (e.g., adding a new topic category or source) should
 
 ### 3. Template Layer (`templates/`)
 
-Defines the exact structure every report must conform to, including the English/中文 pairing required by `CLAUDE.md` §6. Templates are the contract between the Markdown reports and their Notion mirror (`config/notion.yaml` `sync_rules`) — both must stay structurally identical.
+Defines the exact structure every report must conform to, including the English/中文 pairing required by `CLAUDE.md` §6. Templates are the contract between the Markdown reports and their Notion mirror (behavioral sync rules in `CLAUDE.md` §7) — both must stay structurally identical.
 
 ### 4. Execution Layer (Claude Code session)
 
@@ -77,7 +77,7 @@ At run time, Claude Code:
 
 ### 5. Output Layer (`reports/`, Notion)
 
-`reports/` is the git-tracked, canonical history — every report is a permanent, diffable artifact. Notion is a queryable mirror optimized for cross-referencing and search, not the source of truth. If the two ever diverge, `reports/` wins (see `config/notion.yaml` `sync_rules`).
+`reports/` is the git-tracked, canonical history — every report is a permanent, diffable artifact. Notion is a queryable mirror optimized for cross-referencing and search, not the source of truth. If the two ever diverge, `reports/` wins (see `CLAUDE.md` §7).
 
 ## Why Git-Tracked Reports Matter
 

@@ -34,6 +34,8 @@ The repository is both the **tool** (prompts, config, templates) and the **outpu
 
 Every finding tracked by this repository should be classifiable against at least one of these six sub-domains (see `docs/research_domains.md`).
 
+> **Canonical source note:** this list is the conceptual definition, kept intentionally short and self-contained so it can be internalized without file-hopping. `config/topics.yaml` is the canonical machine-readable taxonomy (slugs, keywords, priority weights); `docs/research_domains.md` is the canonical long-form rationale for each domain. If the two disagree on domain names, `config/topics.yaml` wins.
+
 ## 4. Research Scope
 
 **In scope:**
@@ -73,11 +75,12 @@ See §12 for detailed translation principles.
 
 Notion is the durable, searchable home for all reports; the Markdown files in `reports/` are the git-versioned source of truth that get mirrored there.
 
-- Configuration lives in `config/notion.yaml` (parent page, database name, page-naming conventions).
-- Every daily report creates one Notion page as a row in the configured database, named per the `daily_page_naming` pattern.
-- Every weekly/monthly report similarly creates one page each, linked back to the daily pages it synthesizes (use Notion relation properties where available).
-- Never overwrite an existing Notion page silently — if a page for a given date/period already exists, update it explicitly and note in the session output that an update (not a create) occurred.
+- Configuration lives in `config/notion.yaml` (parent page, database name, page-naming conventions, properties). That file defines **structure only** — the behavioral rules below are defined here, once, and are not restated there.
+- Every daily/weekly/monthly report creates exactly one Notion page as a row in its cadence's database, named per the naming pattern in `config/notion.yaml`.
+- Never create a duplicate page for a date/period that already has one — if a page already exists, update it in place and note in the session output that an update (not a create) occurred.
+- Relations between cadences (daily → weekly → monthly) must be set at page creation time, not backfilled later, to avoid orphaned pages.
 - Notion pages mirror the Markdown template structure exactly (see `templates/`) so the two representations never drift.
+- On sync failure, the Markdown file in `reports/` remains authoritative; retry the sync on the next run rather than blocking report creation on sync success.
 
 ## 8. Paper Database Workflow
 
@@ -88,40 +91,18 @@ The paper database is the cumulative record of every scored finding, intended to
 - The paper database is maintained as structured entries inside the Notion database (see `config/notion.yaml`) and mirrored in `reports/` history; a local file-based export/index is a Phase 2 roadmap item (see `docs/roadmap.md`).
 - When scores change materially on re-review (e.g., a paper's enterprise relevance becomes clearer after a product launch cites it), update the entry and note the revision date and reason.
 
-## 9. Daily Routine
+## 9. Routine Cadence
 
-Executed via `prompts/daily.md`. Responsibilities enforced by this file:
+The system runs three cadences. **Exact step-by-step workflow for each lives solely in its prompt file** (`prompts/daily.md`, `prompts/weekly.md`, `prompts/monthly.md`) — do not duplicate those steps here; this section defines only the invariants that hold across all three, so that a change to one cadence's steps never requires a matching edit in this file.
 
-1. Query sources in `config/sources.yaml`, scoped by topics in `config/topics.yaml`.
-2. Filter to items published or meaningfully updated in the last 24–48 hours.
-3. Score every retained item using `config/scoring.yaml`.
-4. Populate `templates/daily_report.md`, write to `reports/daily/YYYY-MM-DD.md`.
-5. Mirror to Notion per `config/notion.yaml` daily naming convention.
-6. Flag anything scoring in the top tier of Research Potential or Product Score for inclusion in the next weekly synthesis.
+- **Daily** — runs once per day; sources new findings directly from `config/sources.yaml`.
+- **Weekly** — runs every 7th day (or on demand); synthesizes across the preceding daily reports.
+- **Monthly** — runs at calendar month end (or on demand); synthesizes across the month's weekly reports.
+- Each cadence consumes only the output of the cadence below it — weekly reads daily reports, monthly reads weekly reports. Never re-query `config/sources.yaml` directly at the weekly or monthly level; re-ranking/re-scoring existing findings is expected, re-sourcing new ones is not.
+- A finding's score may be revised at a later cadence in light of new context (e.g., a weekly synthesis raises a daily finding's Research Potential). Always state the prior score and the reason for the change — see §10 (Reliability Rules).
+- All three cadences write into `reports/<cadence>/` using the matching `templates/<cadence>_report.md` and mirror to Notion per §7 and `config/notion.yaml`. This is invariant across cadences and enforced by each prompt; it is not restated per-cadence here.
 
-## 10. Weekly Routine
-
-Executed via `prompts/weekly.md`, run every 7th day (or on demand).
-
-1. Read all daily reports from the past 7 days in `reports/daily/`.
-2. Identify recurring themes, contradicting findings, and trend acceleration/deceleration.
-3. Re-rank the week's findings; promote items whose Research Potential or Enterprise Score increased in light of the week's full picture.
-4. Populate `templates/weekly_report.md`, write to `reports/weekly/YYYY-Www.md`.
-5. Mirror to Notion per weekly naming convention; link to the week's daily pages.
-6. Maintain a running "watchlist" of open questions to track into subsequent weeks.
-
-## 11. Monthly Routine
-
-Executed via `prompts/monthly.md`, run at calendar month end (or on demand).
-
-1. Read all weekly reports from the month in `reports/weekly/`.
-2. Produce a strategic rollup: major shifts in the field, enterprise adoption signals, and durable vs. transient trends.
-3. Identify 1–3 concrete PoC candidates worth prototyping, with a one-paragraph feasibility note each.
-4. Identify material directly relevant to active or upcoming NSTC proposal cycles, flagged explicitly by proposal section (background, methodology, expected contribution).
-5. Populate `templates/monthly_report.md`, write to `reports/monthly/YYYY-MM.md`.
-6. Mirror to Notion per monthly naming convention; link to the month's weekly pages.
-
-## 12. Reliability Rules
+## 10. Reliability Rules
 
 - **No hallucinated sources.** If a claim cannot be traced to a fetched primary source, do not include it — state the gap instead of inventing a citation.
 - **No fabricated scores.** Every score must be justified with a one-line rationale referencing the rubric in `config/scoring.yaml`.
@@ -130,7 +111,7 @@ Executed via `prompts/monthly.md`, run at calendar month end (or on demand).
 - **Explicit uncertainty.** When a finding is ambiguous (e.g., unclear if a technique generalizes beyond the benchmark shown), state the uncertainty rather than smoothing over it.
 - **Version discipline.** If a paper has multiple arXiv versions, always cite the version actually reviewed and note if conclusions might differ by version.
 
-## 13. Evaluation Principles
+## 11. Evaluation Principles
 
 Every scored finding should be evaluated, not just summarized. Apply these principles alongside the rubric in `config/scoring.yaml`:
 
@@ -140,7 +121,7 @@ Every scored finding should be evaluated, not just summarized. Apply these princ
 - Treat vendor marketing claims (product blog posts, press releases) with a lower evidentiary bar than peer-reviewed claims, and label them as such.
 - Prefer identifying *why* something matters (mechanism, implication) over restating *what* it does.
 
-## 14. Translation Principles
+## 12. Translation Principles
 
 - Translate meaning and register, not word-for-word structure — Traditional Chinese research writing favors shorter clauses; do not force English sentence structure onto the Chinese text.
 - Maintain terminological consistency across all reports: once a term is translated/glossed a particular way (tracked informally via prior reports in `reports/`), reuse that same rendering rather than introducing variants.

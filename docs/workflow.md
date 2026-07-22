@@ -32,18 +32,11 @@ sequenceDiagram
 
 ## Weekly Sequence
 
-1. Trigger weekly synthesis (manually, or on a 7-day schedule).
-2. Claude Code reads the last 7 files in `reports/daily/`.
-3. Cross-report synthesis: themes, contradictions, trend direction.
-4. Re-scoring pass: findings may be promoted if the week's full context changes their assessed value.
-5. Write `reports/weekly/YYYY-Www.md`; sync to Notion, linking source daily pages.
+Triggered every 7th day (or on demand). Claude Code reads the prior 7 files in `reports/daily/` and synthesizes across them — per `CLAUDE.md` §9, it never re-queries `config/sources.yaml` directly at this cadence. Exact steps are owned by `prompts/weekly.md`; they are not repeated here to avoid the two drifting apart.
 
 ## Monthly Sequence
 
-1. Trigger monthly rollup at month end (manually, or scheduled).
-2. Claude Code reads all `reports/weekly/*.md` files for the month.
-3. Strategic synthesis: durable vs. transient trends, PoC candidates, NSTC-relevant material.
-4. Write `reports/monthly/YYYY-MM.md`; sync to Notion, linking source weekly pages.
+Triggered at calendar month end (or on demand). Claude Code reads the month's files in `reports/weekly/` and produces a strategic rollup. Exact steps are owned by `prompts/monthly.md`; they are not repeated here to avoid the two drifting apart.
 
 ## Running a Routine
 
@@ -60,7 +53,7 @@ Claude Code will load `CLAUDE.md` automatically as project instructions; the cad
 
 - **Missed daily run:** Do not backfill fabricated findings for the missed date. Either skip the date explicitly (note the gap in the next weekly report) or run a best-effort catch-up scoped to the missed window, clearly labeled as a catch-up run.
 - **Missed weekly run:** The next weekly run should widen its daily-report window to cover the full unsynthesized period, noted explicitly in the report.
-- **Notion sync failure:** The Markdown file in `reports/` is authoritative regardless. Retry the sync on the next run; do not block report creation on sync success.
+- **Notion sync failure:** governed by `CLAUDE.md` §7 (Notion Workflow) — the rule is the same regardless of which cadence's sync failed, so it is not restated per-cadence here.
 
 ## Review Cadence
 

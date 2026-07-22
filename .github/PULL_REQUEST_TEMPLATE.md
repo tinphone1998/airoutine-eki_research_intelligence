@@ -15,7 +15,7 @@
 ## Checklist
 
 - [ ] Bilingual sections (English / 中文) are complete and paired, if this PR touches a report or template.
-- [ ] Every score change includes a rationale, per `CLAUDE.md` §12–13.
+- [ ] Every score change includes a rationale, per `CLAUDE.md` §10–11.
 - [ ] Any new/changed source or topic is reflected consistently across `config/sources.yaml` and `config/topics.yaml`.
 - [ ] Links to primary sources are valid and dated.
 - [ ] No secrets or credentials introduced (`.gitignore` patterns respected).

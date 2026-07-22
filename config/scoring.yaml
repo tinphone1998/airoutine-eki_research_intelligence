@@ -1,7 +1,8 @@
 # scoring.yaml
 # Scoring rubric applied to every finding logged in a daily report.
-# All scores are integers on a 1–5 scale unless noted. Every score must carry
-# a one-line rationale in the report (CLAUDE.md §13).
+# All scores are integers on a 1–5 scale unless noted. The requirement that
+# every score carry a one-line rationale is a global rule defined once in
+# CLAUDE.md §10 (Reliability Rules) — not restated as rubric text below.
 
 version: 1
 
@@ -79,6 +80,5 @@ composite_flags:
     description: Enterprise-validated and near-shippable — flag for immediate weekly synthesis inclusion.
 
 rationale_requirement: >
-  Every dimension score in a report must be accompanied by a one-sentence
-  rationale citing the specific guiding question(s) it was judged against.
-  Scores without rationale are not valid per CLAUDE.md §12 (Reliability Rules).
+  See CLAUDE.md §10 (Reliability Rules) for the rule text. In short: cite the
+  specific guiding question(s) above that each score was judged against.

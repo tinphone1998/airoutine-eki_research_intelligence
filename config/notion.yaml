@@ -3,6 +3,10 @@
 # Actual page/database IDs are environment-specific and should be supplied via
 # local, untracked configuration (e.g., a .env file) — this file documents the
 # naming and structural conventions, not secrets.
+#
+# Structure only. Behavioral sync rules (dedup-by-update, relation timing,
+# mirror-exactness, retry-on-failure) are defined once in CLAUDE.md §7 —
+# do not restate them here; edit that section if the behavior changes.
 
 version: 1
 
@@ -47,9 +51,3 @@ databases:
       - { name: PoC Candidates, type: rich_text }
       - { name: NSTC Relevance, type: rich_text }
       - { name: Strategic Notes, type: rich_text }
-
-sync_rules:
-  - Never create a duplicate page for a date/period that already has one; update in place.
-  - Mirror the Markdown structure in templates/ exactly — Notion is a rendering of the same content, not a divergent format.
-  - Relations (daily → weekly → monthly) must be set on creation, not backfilled later, to avoid orphaned pages.
-  - On sync failure, the Markdown file in reports/ remains authoritative; retry the Notion sync on the next run.

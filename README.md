@@ -27,6 +27,7 @@ This repository operationalizes that research program as a **Claude Code routine
 eki-research-intelligence/
 ├── README.md                  # This file
 ├── CLAUDE.md                  # Global project instructions for Claude Code
+├── CHANGELOG.md               # History of structural/instruction changes
 ├── LICENSE
 ├── .gitignore
 ├── config/                    # Machine-readable configuration

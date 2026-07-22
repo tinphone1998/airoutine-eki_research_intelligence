@@ -92,5 +92,5 @@ industry_sources:
 
 evaluation_notes: >
   Academic sources are treated as higher-confidence evidence than industry
-  sources per CLAUDE.md §13. Vendor blog claims must be explicitly labeled
-  as vendor-reported rather than independently verified.
+  sources per CLAUDE.md §11 (Evaluation Principles). Vendor blog claims must
+  be explicitly labeled as vendor-reported rather than independently verified.
