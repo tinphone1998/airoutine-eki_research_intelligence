@@ -11,7 +11,7 @@
 version: 1
 
 workspace:
-  parent_page: "EKI Research Intelligence"
+  parent_page: "Scheduled Task/Enterprise AI Daily Research Digest Schedule"
   parent_page_description: >
     Root page in Notion under which all daily, weekly, and monthly research
     databases live. Created once; never recreated by routine runs.
